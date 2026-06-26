@@ -45,23 +45,23 @@ This problem matters for two reasons. First, AI shopping agents are already depl
 
 Our research questions are: (1)~Do social proof tags raise recommendation scores independently of product quality? (2)~Does a consumer-advocate framing reduce susceptibility? (3)~Can formal constraint checking identify \emph{unjustified} recommendations that cite badges instead of evidence? (4)~Does the effect generalize across product categories?
 
-Itest six frontier models across three providers in a controlled dose-response experiment, varying only the social proof overlay count (0--3 tags) while holding the product constant. This report extends prior work with new v14 data across two products (face serum, multivitamin), an SMT-based quality-evidence constraint checker, a SUQL-inspired hybrid query interface over reasoning traces, and Wikidata-grounded knowledge graph evidence for ingredient verification.
+We test six frontier models across three providers in a controlled dose-response experiment, varying only the social proof overlay count (0--3 tags) while holding the product constant. This report extends prior work with new v14 data across two products (face serum, multivitamin), an SMT-based quality-evidence constraint checker, a SUQL-inspired hybrid query interface over reasoning traces, and Wikidata-grounded knowledge graph evidence for ingredient verification.
 
 %─────────────────────────────────────────────────────────────────────────────
 \section{Literature Review}
 %─────────────────────────────────────────────────────────────────────────────
 
-\textbf{Cognitive biases in LLM recommendations.} Geofila et al.~\cite{geofila2025} inject social proof and scarcity triggers into product \emph{text} descriptions and show that social proof consistently inflates LLM recommendation rates beyond objective merit, even with chain-of-thought reasoning enabled. Our work is complementary but tests a harder surface: visual badges overlaid on screenshots, requiring the model to perceive and weight visual cues rather than textual signals. Iadditionally introduce formal constraint verification to distinguish evidence-grounded from badge-grounded recommendations---a distinction Geofila et al.\ do not make.
+\textbf{Cognitive biases in LLM recommendations.} Geofila et al.~\cite{geofila2025} inject social proof and scarcity triggers into product \emph{text} descriptions and show that social proof consistently inflates LLM recommendation rates beyond objective merit, even with chain-of-thought reasoning enabled. Our work is complementary but tests a harder surface: visual badges overlaid on screenshots, requiring the model to perceive and weight visual cues rather than textual signals. We additionally introduce formal constraint verification to distinguish evidence-grounded from badge-grounded recommendations---a distinction Geofila et al.\ do not make.
 
 \textbf{GUI agent dark pattern navigation.} DECEPTICON~\cite{bai2024} benchmarks 700+ dark patterns against web agents, finding that more capable models are \emph{more} susceptible---scaling does not confer resistance. Our work is scoped differently: we test single-turn judgment rather than multi-step navigation, isolating model reasoning from action-sequencing confounds. Our finding that more capable models respond more strongly to the corrective prompt (larger skepticism delta) partially complements DECEPTICON: capability amplifies sensitivity to both the manipulation and the framing intervention.
 
 \textbf{Adversarial visual inputs.} Zhang et al.~\cite{zhang2025popups} show that adversarial pop-ups injected into screenshots drop agent task success by 47\%, with models clicking them 86\% of the time---demonstrating disproportionate model attention to visual elements. Our social proof badges are a subtler variant: socially legitimate-looking, harder to flag as manipulative, and thus more ecologically valid as a dark pattern.
 
-\textbf{LLM evaluation methodology.} DarkBench~\cite{sotopia2025} evaluates 14 LLMs on 660 adversarial prompts using a multi-model LLM-as-Judge panel and structured JSON outputs. Our use of structured JSON responses with explicit reasoning fields and multiple runs per cell mirrors these design choices. Iadd formal SMT constraint checking as a verification layer that does not require an external judge model.
+\textbf{LLM evaluation methodology.} DarkBench~\cite{sotopia2025} evaluates 14 LLMs on 660 adversarial prompts using a multi-model LLM-as-Judge panel and structured JSON outputs. Our use of structured JSON responses with explicit reasoning fields and multiple runs per cell mirrors these design choices. We add formal SMT constraint checking as a verification layer that does not require an external judge model.
 
-\textbf{Structured and unstructured query languages.} Liu et al.~\cite{liu2024suql} introduce SUQL, a query language combining SQL predicates with an \texttt{answer(text, question)} function for NL retrieval over unstructured fields. Iadapt this paradigm to query our evaluation CSV: SQL predicates filter on numeric scores and tag counts, while an \texttt{answer()} predicate pattern-matches reasoning traces for dark-pattern-specific signals. This enables queries---such as finding \emph{reasoning-action gaps}---that are impossible in pure SQL and impractical with pure NL retrieval.
+\textbf{Structured and unstructured query languages.} Liu et al.~\cite{liu2024suql} introduce SUQL, a query language combining SQL predicates with an \texttt{answer(text, question)} function for NL retrieval over unstructured fields. We adapt this paradigm to query our evaluation CSV: SQL predicates filter on numeric scores and tag counts, while an \texttt{answer()} predicate pattern-matches reasoning traces for dark-pattern-specific signals. This enables queries---such as finding \emph{reasoning-action gaps}---that are impossible in pure SQL and impractical with pure NL retrieval.
 
-\textbf{Knowledge-grounded agents.} Wikidata~\cite{vrandeckic2014wikidata} provides structured factual records with SPARQL query access, enabling agents to retrieve CAS registry numbers, biological roles, and medical uses for chemical compounds. Iquery Wikidata for face serum ingredients to demonstrate what structured evidence a KG-grounded agent would have available---precisely the independent quality signals our SMT constraint requires, and which ungrounded LLMs failed to cite in 84\% of high-score cases.
+\textbf{Knowledge-grounded agents.} Wikidata~\cite{vrandeckic2014wikidata} provides structured factual records with SPARQL query access, enabling agents to retrieve CAS registry numbers, biological roles, and medical uses for chemical compounds. We query Wikidata for face serum ingredients to demonstrate what structured evidence a KG-grounded agent would have available---precisely the independent quality signals our SMT constraint requires, and which ungrounded LLMs failed to cite in 84\% of high-score cases.
 
 %─────────────────────────────────────────────────────────────────────────────
 \section{Dataset}
@@ -144,7 +144,7 @@ Both baselines are substantially below the v10 baseline of 3.95/5 (branded paper
 
 \subsection{Multi-Condition Vision-Language Evaluator}
 
-Let $f_m(x, p) \to \hat{s} \in [1,5]$ denote model $m$ mapping screenshot $x$ and prompt condition $p$ to a Likert score. Ievaluate $|\mathcal{M}|=6$ models (Table~\ref{tab:models}), 2 conditions, and 8 images per version.
+Let $f_m(x, p) \to \hat{s} \in [1,5]$ denote model $m$ mapping screenshot $x$ and prompt condition $p$ to a Likert score. We evaluate $|\mathcal{M}|=6$ models (Table~\ref{tab:models}), 2 conditions, and 8 images per version.
 
 \begin{table}[H]
 \centering\small\vspace{-4pt}
@@ -182,7 +182,7 @@ Conditions: $p_\text{avg}$ ({\small AVERAGE\_CONSUMER}) asks for a neutral produ
 
 \subsection{SMT Constraint Analysis (Z3)}
 
-Iintroduce a formal verification layer using the Z3 SMT solver~\cite{demoura2008z3}. For each evaluation row, we check whether a high recommendation ($\hat{s} \geq 3.5$) is \emph{justified} by independent quality evidence in the model's own reasoning trace. Define:
+We introduce a formal verification layer using the Z3 SMT solver~\cite{demoura2008z3}. For each evaluation row, we check whether a high recommendation ($\hat{s} \geq 3.5$) is \emph{justified} by independent quality evidence in the model's own reasoning trace. Define:
 \begin{itemize}\setlength{\itemsep}{1pt}\setlength{\parsep}{0pt}
   \item $q$ (\texttt{has\_independent\_quality}): reasoning cites ingredient names, certifications, clinical data, or brand reputation---signals independent of the page's social proof overlay.
   \item $a$ (\texttt{admits\_no\_quality}): reasoning explicitly acknowledges missing ingredient or brand information.
@@ -197,7 +197,7 @@ A row \emph{violates} the constraint when (A) the model gives a high score witho
 
 \subsection{SUQL Hybrid Query Interface}
 
-Iadapt the SUQL paradigm~\cite{liu2024suql} to the evaluation CSV. SQL predicates filter on structured columns (score, tag count, condition); an \texttt{answer(text, question)} predicate applies regex patterns over unstructured reasoning traces. For example:
+We adapt the SUQL paradigm~\cite{liu2024suql} to the evaluation CSV. SQL predicates filter on structured columns (score, tag count, condition); an \texttt{answer(text, question)} predicate applies regex patterns over unstructured reasoning traces. For example:
 \begin{quote}\small
 \texttt{WHERE condition = 'AVERAGE\_CONSUMER' AND tag\_count >= 2}\\
 \texttt{AND answer(reasoning, 'does the model acknowledge manipulation yet still recommend?')}
@@ -206,7 +206,7 @@ This surfaces \emph{reasoning-action gaps}---rows where the model's CoT flags ba
 
 \subsection{Knowledge Graph Grounding}
 
-Iquery Wikidata~\cite{vrandeckic2014wikidata} via SPARQL for six face serum ingredients (hyaluronic acid, niacinamide, retinol, glycerin, vitamin C, ceramide), retrieving CAS registry numbers, biological roles, medical uses, and GHS safety classifications. Iapply the same Z3 constraint using Wikidata-sourced evidence in place of the model's reasoning. This demonstrates that a KG-grounded agent would have structured chemical identity data available---the exact independent quality evidence 84\% of ungrounded high-score recommendations failed to cite.
+We query Wikidata~\cite{vrandeckic2014wikidata} via SPARQL for six face serum ingredients (hyaluronic acid, niacinamide, retinol, glycerin, vitamin C, ceramide), retrieving CAS registry numbers, biological roles, medical uses, and GHS safety classifications. We apply the same Z3 constraint using Wikidata-sourced evidence in place of the model's reasoning. This demonstrates that a KG-grounded agent would have structured chemical identity data available---the exact independent quality evidence 84\% of ungrounded high-score recommendations failed to cite.
 
 %─────────────────────────────────────────────────────────────────────────────
 \section{Evaluation Metrics}
@@ -333,7 +333,7 @@ The SUQL query for ``rows with $\hat{s} \geq 3.0$ where reasoning acknowledges m
 \section{Future Work}
 %─────────────────────────────────────────────────────────────────────────────
 
-\textbf{v15 product description experiment.} Ihave generated a v15 image set by inserting product description text into v14 images. For v15-serum and v15-vitamin, vague wellness copy is added (``formulated for maximum daily wellness using high-quality, bioavailable ingredients; manufactured in a GMP-certified facility''). For v15-filter, the description includes explicit ISO~12312-2 certification and OD~5.0 optical density specs---directly addressing the objections models raised in v12 CoT reasoning. Running these image sets will test whether substantive text context reduces badge susceptibility and whether satisfying the Z3 quality-evidence constraint at the page level changes recommendation rates.
+\textbf{v15 product description experiment.} We have generated a v15 image set by inserting product description text into v14 images. For v15-serum and v15-vitamin, vague wellness copy is added (``formulated for maximum daily wellness using high-quality, bioavailable ingredients; manufactured in a GMP-certified facility''). For v15-filter, the description includes explicit ISO~12312-2 certification and OD~5.0 optical density specs---directly addressing the objections models raised in v12 CoT reasoning. Running these image sets will test whether substantive text context reduces badge susceptibility and whether satisfying the Z3 quality-evidence constraint at the page level changes recommendation rates.
 
 \textbf{Worst-case baseline product.} The most critical design gap is the absence of a product that rational agents should reject absent manipulation---e.g., a \$49 item with readily available \$7--\$20 competitors. Any tag-induced recommendation on such a product would be unambiguously attributable to the dark pattern, mirroring the CHI 2026 study design~\cite{andrus2026}.
 
