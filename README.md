@@ -2,7 +2,7 @@
 
 **Social Proof Susceptibility, Constraint Verification, and Knowledge Grounding**
 
-Author: Jason Shin · Stanford (CS224V) · Advised in the Stanford HAI ecosystem
+Jason Shin, Lord Crawford, Jennifer King · Stanford Institute for Human-Centered AI (HAI)
 
 As frontier models are embedded in e-commerce workflows, are they susceptible to the
 same *dark patterns* that manipulate human consumers? This project measures whether
@@ -54,4 +54,4 @@ streamlit run app.py      # browse results
 ```
 
 ## Report
-See **`final_report.pdf`** for the full writeup. A peer-reviewed paper is in preparation.
+See **`final_report.pdf`** for the full technical report. A peer-reviewed paper is in preparation.
