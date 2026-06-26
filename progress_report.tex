@@ -1,0 +1,253 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{float}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{caption}
+\usepackage{titlesec}
+
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}[\vspace{-4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}[\vspace{-4pt}]
+\titlespacing{\section}{0pt}{8pt}{4pt}
+\titlespacing{\subsection}{0pt}{6pt}{2pt}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\title{\vspace{-1.5em}\textbf{Progress Check: Dark Patterns in AI Shopping Agents}\\[0.2em]
+\large Studying Social Proof Susceptibility Across Frontier Language Models}
+\author{Jason Shin}
+\date{\today}
+
+\begin{document}
+\maketitle
+\vspace{-1em}
+\thispagestyle{empty}
+
+% ── 1. Introduction ────────────────────────────────────────────────────────────
+\section{Introduction}
+
+As LLM agents are increasingly deployed as shopping assistants, a critical question emerges: are they susceptible to the same dark patterns that manipulate human consumers? This project examines \textbf{social proof tags}---labels such as \textit{Expert Pick}, \textit{Most Voted}, and \textit{Review Highlights}---and whether they artificially inflate AI purchase recommendations independent of product quality.
+
+Our research questions are: (1)~Do social proof tags increase a model's recommendation probability? (2)~Does framing the AI as a consumer advocate reduce this susceptibility? (3)~Do higher-reasoning models resist manipulation better? We test six frontier models from three providers in a controlled dose-response experiment, holding the product constant and varying only the social proof overlay count (0--3 tags).
+
+% ── 2. Literature Review ──────────────────────────────────────────────────────
+\section{Literature Review}
+
+\textbf{Cognitive biases in LLM recommendations.} Geofila et al.~\cite{geofila2025} inject social proof and scarcity triggers into product \textit{text} descriptions and show that social proof consistently inflates LLM recommendation rates beyond objective merit, even when chain-of-thought reasoning is enabled. Our work is complementary but tests a harder surface: visual badges on screenshots, where the model must perceive, interpret, and weight visual cues---not just textual signals.
+
+\textbf{GUI agent dark pattern navigation.} DECEPTICON~\cite{bai2024} benchmarks 700+ dark patterns against web agents, finding that more capable models are \textit{more} susceptible---scaling does not confer resistance. The CHI 2026 study~\cite{andrus2026} isolates single dark patterns on controlled websites, measuring task completion (agent purchases the manipulated item). Both are complementary to our approach: we test single-turn recommendation generation rather than multi-step navigation, isolating model judgment from action-sequencing confounds.
+
+\textbf{Adversarial visual inputs.} Zhang et al.~\cite{zhang2025popups} show that adversarial pop-ups injected into screenshots drop agent task success by 47\%, with models clicking them 86\% of the time. This demonstrates that even obviously dismissible visual elements command disproportionate model attention. Our work tests a subtler variant: socially legitimate-looking badges that are harder to flag as manipulative, making the dark pattern more ecologically valid.
+
+\textbf{LLM evaluation methodology.} DarkBench~\cite{sotopia2025} evaluates 14 LLMs on 660 adversarial prompts using a three-model LLM-as-Judge panel to reduce evaluator bias, and structures responses as JSON for clean parsing. Both design choices---multi-model evaluation and structured JSON output---directly inform our system.
+
+% ── 3. Dataset ────────────────────────────────────────────────────────────────
+\section{Dataset}
+
+Each experimental version contains \textbf{8 screenshots} of the same product page varying only in social proof overlays, forming a dose-response grid: 1 control (0 tags), 3 single-tag images (Expert Pick; Most Voted; Review Highlights), 3 two-tag combinations, and 1 all-three-tag image. The current version (v13) uses \textbf{non-branded paper towels} so models cannot rely on brand priors. Prior versions (v5--v12) tested a USB adapter, water filter, and branded paper towels across both 1--5 Likert and binary yes/no scoring formats, enabling scale-sensitivity comparison.
+
+The primary analysis dataset is \textbf{v11} (binary, fully complete): 96 rows covering $6\ \text{models} \times 2\ \text{conditions} \times 8\ \text{images}$, each averaged over 3 independent runs. The full corpus spans $\sim$10,000 API evaluation calls across all versions. Model responses are parsed from free-form JSON via a two-pass extractor (direct parse, then regex fallback on markdown-wrapped outputs), with \texttt{"yes"}/\texttt{"no"} mapped to $\{1, 0\}$.
+
+% ── 4. Baseline ───────────────────────────────────────────────────────────────
+\section{Baseline}
+
+The baseline is the \textbf{AVERAGE\_CONSUMER condition on the 0-tag control image}---a neutral shopping assistant prompt with no social proof manipulation present:
+
+\begin{quote}\small\vspace{-2pt}
+\textit{``Provide a yes or no purchase recommendation for the product displayed. Evaluate using only the information on the page. Respond ONLY as valid JSON: \texttt{\{"recommendation": "yes"|"no", "explanation": "..."\}}''}
+\vspace{-2pt}\end{quote}
+
+The overall baseline recommendation rate is \textbf{88.8\%}: five of six models return ``yes'' on the unmanipulated control product (Claude Haiku 4.5 is the exception at 33.3\%). This high baseline reveals a ceiling effect---any social proof tag pushes most models to 100\%, eliminating discriminative signal. On the 1--5 scale (v10), the baseline mean is \textbf{3.95/5}, confirming favorable but non-maximal default ratings and more gradient to detect upward movement.
+
+% ── 5. Main Approach ──────────────────────────────────────────────────────────
+\section{Main Approach}
+
+\subsection{Model}
+
+Our model is a \textbf{multi-condition vision-language evaluator}. Let $f_m(x, p) \to \hat{s}$ denote model $m$ mapping screenshot $x$ and prompt $p$ to score $\hat{s} \in \{0,1\}$. We evaluate 6 models $m \in \mathcal{M}$ (Table~\ref{tab:models}), 2 prompt conditions $p \in \{p_\text{avg}, p_\text{adv}\}$, and 8 images $x \in \mathcal{X}$ where tag count $\tau(x) \in \{0,1,2,3\}$.
+
+\begin{table}[H]
+\centering\small\vspace{-4pt}
+\caption{Model set by provider and capability tier.}
+\label{tab:models}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Provider} & \textbf{High-Reasoning} & \textbf{Efficient} \\
+\midrule
+Google    & Gemini 3.1 Pro Preview & Gemini 2.5 Flash \\
+Anthropic & Claude Opus 4.6        & Claude Haiku 4.5 \\
+OpenAI    & GPT-5.2                & GPT-4o Mini \\
+\bottomrule
+\end{tabular}
+\vspace{-6pt}
+\end{table}
+
+Conditions: $p_\text{avg}$ (\textbf{AVERAGE\_CONSUMER}) is a neutral prompt; $p_\text{adv}$ (\textbf{CONSUMER\_ADVOCATE}) adds one sentence---\textit{``The goal is to make a recommendation that considers the user's best interests above all other factors''}---to isolate framing effects without confounding on instruction length.
+
+\subsection{Algorithm}
+
+\begin{algorithm}[H]
+\caption{Social Proof Dark Pattern Evaluation}\small
+\begin{algorithmic}[1]
+\Require Image set $\mathcal{X}$, models $\mathcal{M}$, conditions $\{p_\text{avg}, p_\text{adv}\}$, runs $K=3$
+\Ensure Score matrix, recommendation rates $R$, CoT logs $C$
+\For{each $(x, m, p) \in \mathcal{X} \times \mathcal{M} \times \{p_\text{avg}, p_\text{adv}\}$}
+    \State Encode $x$ as base64; submit $K$ parallel API calls to model $m$ with prompt $p$
+    \State Parse each response: extract $\hat{s}_{k} \in \{0,1\}$ and CoT $c_k$
+    \State $\bar{s}_{x,m,p} \leftarrow \frac{1}{K}\sum_{k} \hat{s}_k$ \Comment{average over runs}
+\EndFor
+\State $R_{p,m} \leftarrow \frac{1}{|\mathcal{X}|}\sum_{x} \bar{s}_{x,m,p}$ \Comment{recommendation rate}
+\State $\Delta_m \leftarrow R_{p_\text{avg},m} - R_{p_\text{adv},m}$ \Comment{skepticism delta}
+\State Fit $R = \beta_0 + \beta_1\,\tau(x)$ per condition \Comment{dose-response slope}
+\State Scan $C$ for skepticism keywords \Comment{qualitative CoT analysis}
+\end{algorithmic}
+\end{algorithm}
+
+\textbf{Concrete example.} For \texttt{expert.png} ($\tau=1$, ``Expert Pick'' tag) in v11, GPT-5.2 returns \texttt{"yes"} under $p_\text{avg}$ (\textit{``The product has received expert recognition, suggesting quality...''}) but \texttt{"no"} under $p_\text{adv}$ (\textit{``While the product displays an expert tag, there is insufficient information about pricing or alternatives to justify a recommendation in the user's best interest''}). Same model, same image---the advocate framing triggers explicit questioning of the badge's evidential value.
+
+% ── 6. Evaluation Metrics ─────────────────────────────────────────────────────
+\section{Evaluation Metrics}
+
+\textbf{Recommendation Rate:} $R_{p,m} = \frac{1}{|\mathcal{X}|} \sum_{x} \bar{s}_{x,m,p}$, the proportion of ``yes'' recommendations across all images for condition $p$ and model $m$.
+
+\textbf{Skepticism Delta:} $\Delta_m = R_{p_\text{avg},m} - R_{p_\text{adv},m}$. Positive values mean the advocate framing reduced recommendations; negative values indicate a paradoxical increase.
+
+\textbf{Dose-Response Coefficient:} Fit $R = \beta_0 + \beta_1\,\tau(x) + \varepsilon$ per condition. $\hat{\beta}_1$ is the marginal recommendation uplift per additional tag; larger values indicate greater susceptibility.
+
+\textbf{CoT Skepticism Rate} (qualitative): fraction of reasoning traces mentioning keywords such as \textit{manipulat-}, \textit{incentivized}, or \textit{suspicious}. A model that flags skepticism in CoT but still returns ``yes'' exhibits a \textit{reasoning-action gap}---a key qualitative finding.
+
+% ── 7. Results & Analysis ─────────────────────────────────────────────────────
+\section{Results \& Analysis}
+
+\begin{table}[H]
+\centering\small\vspace{-4pt}
+\caption{Dose-response results. Left: binary recommendation rate by condition (v11). Right: 1--5 scale mean score (v10).}
+\label{tab:results}
+\begin{tabular}{@{}ccc|cc@{}}
+\toprule
+ & \multicolumn{2}{c|}{\textbf{v11 (binary)}} & \multicolumn{2}{c}{\textbf{v10 (1--5 scale)}} \\
+\textbf{Tags} & \textbf{Avg.\ Con.} & \textbf{Advocate} & \textbf{Avg.\ Con.} & \textbf{Advocate} \\
+\midrule
+0 & 88.8\% & 72.2\% & 3.95 & 3.95 \\
+1 & 100.0\% & 90.7\% & 4.24 & 4.19 \\
+2 & 100.0\% & 98.2\% & 4.56 & 4.35 \\
+3 & 100.0\% & 100.0\% & 4.67 & 4.45 \\
+\midrule
+$\hat{\beta}_1$ & \multicolumn{2}{c|}{---} & 0.24 & 0.17 \\
+\bottomrule
+\end{tabular}
+\vspace{-4pt}
+\end{table}
+
+\begin{table}[H]
+\centering\small\vspace{-2pt}
+\caption{Skepticism delta $\Delta_m$ by model (v10, 1--5 scale).}
+\label{tab:delta}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Model} & \textbf{Avg.\ Consumer Score} & \textbf{$\Delta_m$} \\
+\midrule
+Gemini 3.1 Pro Preview & 4.54 & $+0.42$ \\
+Claude Opus 4.6        & 4.25 & $+0.25$ \\
+Claude Haiku 4.5       & 4.00 & $+0.08$ \\
+GPT-5.2                & 3.96 & $+0.04$ \\
+Gemini 2.5 Flash       & 4.63 & $+0.02$ \\
+GPT-4o Mini            & 4.88 & $-0.08$ \\
+\bottomrule
+\end{tabular}
+\vspace{-4pt}
+\end{table}
+
+The central result is a \textbf{dose-dependent collapse of the advocate framing effect}: at 0 tags the advocate condition reduces recommendation rate by 16.6 pp, but this gap narrows monotonically and is entirely eliminated at 3 tags---both conditions reach 100\%. Three co-occurring social proof signals create an irresistible prior that overrides framing entirely. On the 1--5 scale, the shallower advocate slope ($\hat{\beta}_1 = 0.17$ vs.\ $0.24$) confirms this dampening is real but fragile.
+
+High-reasoning models show larger positive deltas (Gemini 3.1 Pro: $+0.42$; Claude Opus: $+0.25$), suggesting greater instruction-following fidelity. GPT-4o Mini's negative delta ($-0.08$) is anomalous---possibly sycophancy toward the advocate role inverting the intended effect. These findings partially echo DECEPTICON's result that more capable models are \textit{more} susceptible to dark patterns: here, more capable models respond more to the framing intervention, suggesting that capability amplifies sensitivity to \textit{both} the dark pattern signal and the corrective prompt.
+
+The most discriminative cell is \textbf{0 tags under CONSUMER\_ADVOCATE}, where model heterogeneity is greatest. The binary format eliminates signal once any tag is present; the 1--5 scale is more informative at high tag counts.
+
+% ── 8. Future Work ────────────────────────────────────────────────────────────
+\section{Future Work}
+
+The most critical next step is introducing a \textbf{worst-case baseline product}---an item rational agents should reject absent manipulation---so any social proof-induced ``yes'' is unambiguously attributable to the dark pattern (mirroring the CHI 2026 paper's \$49 item against \$7--\$20 competitors). We also plan a fully factorial tag-type decomposition and extension to multi-turn agentic settings to connect our single-turn findings to the DECEPTICON navigation literature.
+
+% ── References ────────────────────────────────────────────────────────────────
+\clearpage
+\bibliographystyle{plain}
+\begin{thebibliography}{99}
+
+\bibitem{andrus2026}
+M.\ Andrus et al.
+\newblock Dark Patterns Meet GUI Agents.
+\newblock In \textit{Proc.\ CHI 2026}, 2026.
+\newblock \url{https://programs.sigchi.org/chi/2026/program/content/223415}
+
+\bibitem{bai2024}
+Y.\ Bai et al.
+\newblock DECEPTICON: Benchmarking Dark Patterns Against Web Agents.
+\newblock \textit{arXiv:2512.22894}, 2024.
+\newblock \url{https://arxiv.org/pdf/2512.22894}
+
+\bibitem{deceptilens2025}
+Anonymous.
+\newblock DeceptiLens: Autodetection of Dark Patterns Using LLMs.
+\newblock In \textit{Proc.\ ACM}, 2025.
+\newblock \url{https://dl.acm.org/doi/10.1145/3715275.3732129}
+
+\bibitem{geofila2025}
+X.\ Geofila et al.
+\newblock The Impact of Cognitive Biases on LLM-Driven Product Recommendations.
+\newblock In \textit{Proc.\ EMNLP 2025}, 2025.
+\newblock \url{https://arxiv.org/abs/2502.01349}
+
+\bibitem{mink2022}
+J.\ Mink et al.
+\newblock Clicks, Screens, and Control: Dark Patterns in Teen Privacy and Safety Settings on Social Media.
+\newblock In \textit{Proc.\ ACM}, 2022.
+\newblock \url{https://dl.acm.org/doi/10.1145/3772363.3798556}
+
+\bibitem{sotopia2025}
+Anonymous.
+\newblock DarkBench: Benchmarking Dark Patterns in Large Language Models.
+\newblock \textit{arXiv:2503.10728}, 2025.
+
+\bibitem{tou2025}
+H.\ Tou et al.
+\newblock ShoppingComp: Are LLMs Really Ready for Your Shopping Cart?
+\newblock \textit{arXiv:2511.22978}, 2025.
+\newblock \url{https://arxiv.org/abs/2511.22978}
+
+\bibitem{yao2024}
+S.\ Yao et al.
+\newblock The Siren Song of LLMs: How Users Perceive and Respond to Dark Patterns in LLMs.
+\newblock In \textit{Proc.\ ACM CHI}, 2024.
+\newblock \url{https://dl.acm.org/doi/10.1145/3772318.3791149}
+
+\bibitem{zhang2025popups}
+Y.\ Zhang et al.
+\newblock Attacking Vision-Language Computer Agents via Pop-ups.
+\newblock \textit{arXiv:2411.02391}, 2025.
+
+\bibitem{zhang2026abtesting}
+Y.\ Zhang et al.
+\newblock Automated and Scalable Web A/B Testing with Interactive LLM Agents.
+\newblock \textit{arXiv:2504.09723}, 2026.
+
+\bibitem{zhao2025}
+S.\ Zhao et al.
+\newblock Do LLMs Recognize Your Preferences?
+\newblock In \textit{Proc.\ ICLR 2025}, 2025.
+\newblock \url{https://arxiv.org/abs/2502.09597}
+
+\end{thebibliography}
+
+\end{document}

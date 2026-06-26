@@ -1,0 +1,7 @@
+ingredient,qid,cas_number,ghs_classifications,biological_roles,medical_uses,safety_class,kg_justified
+Hyaluronic Acid,Q3143635,9067-32-7,,,,,True
+Niacinamide,Q192423,98-92-0,,,pellagra,,True
+Retinol,Q424976,68-26-8,,,,,True
+Glycerin,Q132501,56-81-5,Regulation (EC) No. 1272/2008; NFPA 704: Standard System for the Identification of the Hazards of Materials for Emergency Response,,constipation; dermatitis,206.3,True
+Vitamin C,Q199678,50-81-7,,,,,True
+Ceramide,Q424213,104404-17-3,,,,,True
