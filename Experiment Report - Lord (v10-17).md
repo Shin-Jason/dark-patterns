@@ -1,4 +1,6 @@
-# Social Proof Dark Patterns — Experiment Log v10–v17
+# Experiment Report - Lord
+
+**Repository:** https://github.com/Shin-Jason/dark-patterns/tree/lord — my contribution lives on the **`lord` branch** (not `main`), and is specifically the **v10–v17** experiments within this codebase.
 
 **Scope:** versions v10–v17 (v2–v9 predate this log).
 **Product images:** all product pages and social-proof badges were generated with Gemini and Figma AI. The only real product is the v10 Nature Made bottle; every other brand (VitaBoost, ApexFlow, Lumina, Veridian) is synthetic.
@@ -11,6 +13,20 @@
 Two axes are varied across versions:
 1. **Product construction** — how credible/complete the product page is (real brand → fake+bare → fake+rich → fully-specified).
 2. **Social-proof tag** — one badge added per image, holding the product fixed. This isolates the marginal effect of each dark pattern.
+
+---
+
+## Running the code
+
+```bash
+pip install -r requirements.txt          # install dependencies
+echo "OPENROUTER_API_KEY=sk-..." > .env   # add our OpenRouter key
+
+python main.py            # run the study → writes results CSV, CoT .md, and plots
+streamlit run app.py      # launch the interactive dashboard (opens in browser)
+```
+
+To run a different version, edit the `SCREENSHOTS_DIR` and `OUTPUT_*` filenames in the config block at the top of `main.py`.
 
 ---
 
