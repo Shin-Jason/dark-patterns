@@ -61,11 +61,85 @@ EXPERIMENT_VERSIONS = {
         "screenshots_dir": "v9-control",
         "tag_count_map": "v9",
     },
+    "v10 (Supplement)": {
+        "csv": "social_proof_results_v10.csv",
+        "heatmap": "heatmap_scores_v10.png",
+        "delta": "delta_skepticism_v10.png",
+        "screenshots_dir": "v10-supplement",
+        "tag_count_map": "v10",
+    },
+    "v10b (Supplement Yes/No)": {
+        "csv": "social_proof_results_v10b.csv",
+        "heatmap": "heatmap_scores_v10b.png",
+        "delta": "delta_skepticism_v10b.png",
+        "screenshots_dir": "v10-supplement",
+        "tag_count_map": "v10",
+        "score_type": "binary",
+    },
+    "v11 (Fake Supplement)": {
+        "csv": "social_proof_results_v11.csv",
+        "heatmap": "heatmap_scores_v11.png",
+        "delta": "delta_skepticism_v11.png",
+        "screenshots_dir": "v11-fake_supplement",
+        "tag_count_map": "v11",
+    },
+    "v11b (Fake Supplement Yes/No)": {
+        "csv": "social_proof_results_v11b.csv",
+        "heatmap": "heatmap_scores_v11b.png",
+        "delta": "delta_skepticism_v11b.png",
+        "screenshots_dir": "v11-fake_supplement",
+        "tag_count_map": "v11",
+        "score_type": "binary",
+    },
+    "v12 (Isolated Tags)": {
+        "csv": "social_proof_results_v12.csv",
+        "heatmap": "heatmap_scores_v12.png",
+        "delta": "delta_skepticism_v12.png",
+        "screenshots_dir": "v12-apexflow",
+        "tag_count_map": "v12",
+    },
+    "v13 (Lumina Supplement)": {
+        "csv": "social_proof_results_v13.csv",
+        "heatmap": "heatmap_scores_v13.png",
+        "delta": "delta_skepticism_v13.png",
+        "screenshots_dir": "v13-luminasupplement",
+        "tag_count_map": "v13",
+    },
+    "v14 (New Lumina)": {
+        "csv": "social_proof_results_v14.csv",
+        "heatmap": "heatmap_scores_v14.png",
+        "delta": "delta_skepticism_v14.png",
+        "screenshots_dir": "v14-newlumina",
+        "tag_count_map": "v14",
+    },
+    "v15 (Veridian)": {
+        "csv": "social_proof_results_v15.csv",
+        "heatmap": "heatmap_scores_v15.png",
+        "delta": "delta_skepticism_v15.png",
+        "screenshots_dir": "v15-veridian",
+        "tag_count_map": "v15",
+    },
+    "v16 (Lumina More Info)": {
+        "csv": "social_proof_results_v16.csv",
+        "heatmap": "heatmap_scores_v16.png",
+        "delta": "delta_skepticism_v16.png",
+        "screenshots_dir": "v14-newlumina",
+        "tag_count_map": "v16",
+    },
+    "v17 (Veridian More Info)": {
+        "csv": "social_proof_results_v17.csv",
+        "heatmap": "heatmap_scores_v17.png",
+        "delta": "delta_skepticism_v17.png",
+        "screenshots_dir": "v15-veridian",
+        "tag_count_map": "v17",
+    },
 }
 
 CONDITION_LABELS = {
     "AVERAGE_CONSUMER": "🟢 Average Consumer",
     "CONSUMER_ADVOCATE": "🔴 Consumer Advocate",
+    "BASELINE": "🟢 Baseline",
+    "MANIPULATION": "🔴 Manipulation",
 }
 
 MODEL_SHORT_NAMES = {
@@ -123,6 +197,83 @@ TAG_COUNT_MAP_V9 = {
     "control-B.png": 0,
 }
 
+TAG_COUNT_MAP_V10 = {
+    "control_v10.png": 0,
+    "expert_tag_v10.png": 1,
+    "review_tag_v10.png": 1,
+    "trending_tag_v10.png": 1,
+    "voted_best_tag_v10.png": 1,
+    "wirecutter_tag_v10.png": 1,
+}
+
+TAG_COUNT_MAP_V11 = {
+    "control_v11.png": 0,
+    "expert_tag_v11.png": 1,
+    "review_tag_v11.png": 1,
+    "trending_tag_v11.png": 1,
+    "voted_best_tag_v11.png": 1,
+    "wirecutter_tag_v11.png": 1,
+}
+
+TAG_COUNT_MAP_V12 = {
+    "control_v12.png": 0,
+    "expert_tag_v12.png": 1,
+    "review_tag_v12.png": 1,
+    "trending_tag_v12.png": 1,
+    "voted_best_tag_v12.png": 1,
+    "wirecutter_tag_v12.png": 1,
+}
+
+TAG_COUNT_MAP_V13 = {
+    "control_v13.png": 0,
+    "celebrity_tag_v13.png": 1,
+    "expert_tag_v13.png": 1,
+    "review_tag_v13.png": 1,
+    "trending_tag_v13.png": 1,
+    "voted_best_tag_v13.png": 1,
+    "wirecutter_tag_v13.png": 1,
+}
+
+TAG_COUNT_MAP_V14 = {
+    "control_v14.png": 0,
+    "celebrity_tag_v14.png": 1,
+    "expert_tag_v14.png": 1,
+    "review_tag_v14.png": 1,
+    "trending_tag_v14.png": 1,
+    "voted_best_tag_v14.png": 1,
+    "wirecutter_tag_v14.png": 1,
+}
+
+TAG_COUNT_MAP_V15 = {
+    "control_v15.png": 0,
+    "celebrity_tag_v15.png": 1,
+    "expert_tag_v15.png": 1,
+    "review_tag_v15.png": 1,
+    "trending_tag_v15.png": 1,
+    "voted_best_tag_v15.png": 1,
+    "wirecutter_tag_v15.png": 1,
+}
+
+TAG_COUNT_MAP_V16 = {
+    "control_v14.png": 0,
+    "celebrity_tag_v14.png": 1,
+    "expert_tag_v14.png": 1,
+    "review_tag_v14.png": 1,
+    "trending_tag_v14.png": 1,
+    "voted_best_tag_v14.png": 1,
+    "wirecutter_tag_v14.png": 1,
+}
+
+TAG_COUNT_MAP_V17 = {
+    "control_v15.png": 0,
+    "celebrity_tag_v15.png": 1,
+    "expert_tag_v15.png": 1,
+    "review_tag_v15.png": 1,
+    "trending_tag_v15.png": 1,
+    "voted_best_tag_v15.png": 1,
+    "wirecutter_tag_v15.png": 1,
+}
+
 # Model tier groupings
 MODEL_TIERS = {
     "Gemini 3.1 Pro Preview": "High Reasoning",
@@ -163,6 +314,20 @@ CONFOUND_CATEGORIES = {
     ],
     "Identical Image Flag": [
         "visually identical", "identical", "same image", "distinguish",
+    ],
+    "Artifact Detection": [
+        "mockup", "test page", "stimulus", "badge only", "png", "filename",
+        "heading at the top", "label at the top", "not a legitimate",
+    ],
+    "Label Inconsistency": [
+        "inconsisten", "mismatch", "discrepan", "contradict",
+        "different product", "bottle label", "bottle is labeled",
+        "completely different",
+    ],
+    "Supplement Info Missing": [
+        "supplement fact", "ingredient list", "dosage", "clinical evidence",
+        "third-party test", "no reviews", "elemental magnesium",
+        "serving size", "formulation",
     ],
 }
 
@@ -251,6 +416,8 @@ details[data-testid="stExpander"] {
 .score-4 { background: #16a34a; }
 .score-5 { background: #059669; }
 .score-na { background: #6b7280; }
+.score-yes { background: #059669; }
+.score-no { background: #dc2626; }
 </style>
 """,
     unsafe_allow_html=True,
@@ -275,9 +442,12 @@ def load_data(csv_path: str) -> pd.DataFrame:
     return df
 
 
-def score_badge(score) -> str:
+def score_badge(score, binary: bool = False) -> str:
     if pd.isna(score) or score is None:
         return '<span class="score-badge score-na">N/A</span>'
+    if binary:
+        label, cls = ("Yes", "yes") if int(round(score)) == 1 else ("No", "no")
+        return f'<span class="score-badge score-{cls}">{label}</span>'
     s = int(score)
     return f'<span class="score-badge score-{s}">{s}/5</span>'
 
@@ -309,8 +479,26 @@ elif version_config["tag_count_map"] == "v8":
     active_tag_map = TAG_COUNT_MAP_V8
 elif version_config["tag_count_map"] == "v9":
     active_tag_map = TAG_COUNT_MAP_V9
+elif version_config["tag_count_map"] == "v10":
+    active_tag_map = TAG_COUNT_MAP_V10
+elif version_config["tag_count_map"] == "v11":
+    active_tag_map = TAG_COUNT_MAP_V11
+elif version_config["tag_count_map"] == "v12":
+    active_tag_map = TAG_COUNT_MAP_V12
+elif version_config["tag_count_map"] == "v13":
+    active_tag_map = TAG_COUNT_MAP_V13
+elif version_config["tag_count_map"] == "v14":
+    active_tag_map = TAG_COUNT_MAP_V14
+elif version_config["tag_count_map"] == "v15":
+    active_tag_map = TAG_COUNT_MAP_V15
+elif version_config["tag_count_map"] == "v16":
+    active_tag_map = TAG_COUNT_MAP_V16
+elif version_config["tag_count_map"] == "v17":
+    active_tag_map = TAG_COUNT_MAP_V17
 else:
     active_tag_map = TAG_COUNT_MAP
+
+is_binary = version_config.get("score_type") == "binary"
 
 st.sidebar.markdown("---")
 
@@ -475,7 +663,7 @@ with tab_deepdive:
             cells = f"<td style='padding:10px 16px;font-weight:600;'>{model_name}</td>"
             for col in pivot.columns:
                 val = pivot.loc[model_name, col] if col in pivot.columns else None
-                cells += f"<td style='padding:10px 16px;text-align:center;'>{score_badge(val)}</td>"
+                cells += f"<td style='padding:10px 16px;text-align:center;'>{score_badge(val, binary=is_binary)}</td>"
             html_rows.append(f"<tr>{cells}</tr>")
 
         header_cells = "<th style='padding:10px 16px;'>Model</th>"
@@ -517,7 +705,7 @@ with tab_deepdive:
                 explanation = row.get("Explanation", "")
                 reasoning = row.get("Reasoning", "")
 
-                with st.expander(f"{cond_label}  —  Score: {int(score_val) if pd.notna(score_val) else 'N/A'}/5"):
+                with st.expander(f"{cond_label}  —  {'Yes' if int(round(score_val)) == 1 else 'No'}" if is_binary and pd.notna(score_val) else f"{cond_label}  —  Score: {int(score_val) if pd.notna(score_val) else 'N/A'}/5"):
                     # Explanation
                     st.markdown("**📝 Explanation**")
                     st.markdown(explanation if explanation else "*No explanation provided.*")
@@ -540,15 +728,23 @@ with tab_research:
 
     # ── 1. Dose-Response Analysis ────────────────────────────────
     st.markdown("---")
-    st.markdown("### 1 · Dose-Response Analysis (Tag Additivity)")
-    st.caption(
-        "How does stacking social proof tags (0 → 3) affect the recommendation score? "
-        "Separate lines per condition."
-    )
-
     dose_df = filtered.copy()
     dose_df["Tag Count"] = dose_df["Image"].map(active_tag_map)
     dose_valid = dose_df.dropna(subset=["Tag Count", "Raw Score"])
+    max_tags = int(dose_valid["Tag Count"].max()) if not dose_valid.empty else 3
+
+    if max_tags <= 1:
+        st.markdown("### 1 · Badge vs. No Badge")
+        st.caption(
+            "Mean recommendation score with and without a social proof badge present. "
+            "Separate bars per condition."
+        )
+    else:
+        st.markdown("### 1 · Dose-Response Analysis (Tag Additivity)")
+        st.caption(
+            f"How does stacking social proof tags (0 → {max_tags}) affect the recommendation score? "
+            "Separate lines per condition."
+        )
 
     if dose_valid.empty:
         st.info("No tag-mapped data available for dose-response chart.")
@@ -560,30 +756,53 @@ with tab_research:
         )
         dose_agg.columns = ["Tag Count", "Condition", "Mean Score", "SEM", "N"]
 
-        fig_dose = go.Figure()
-        colors = {"🟢 Average Consumer": "#22c55e", "🔴 Consumer Advocate": "#ef4444"}
-        for cond in dose_agg["Condition"].unique():
-            subset = dose_agg[dose_agg["Condition"] == cond].sort_values("Tag Count")
-            fig_dose.add_trace(go.Scatter(
-                x=subset["Tag Count"],
-                y=subset["Mean Score"],
-                mode="lines+markers",
-                name=cond,
-                line=dict(width=3, color=colors.get(cond, "#888")),
-                marker=dict(size=10),
-                error_y=dict(type="data", array=subset["SEM"].tolist(), visible=True),
-                hovertemplate="Tags: %{x}<br>Mean: %{y:.2f} ± %{error_y.array:.2f}<br>N=%{customdata}",
-                customdata=subset["N"].tolist(),
-            ))
+        colors = {"🟢 Average Consumer": "#22c55e", "🔴 Consumer Advocate": "#ef4444", "🟢 Baseline": "#22c55e", "🔴 Manipulation": "#ef4444"}
 
-        fig_dose.update_layout(
-            xaxis=dict(title="Number of Social Proof Tags", dtick=1, range=[-0.3, 3.3]),
-            yaxis=dict(title="Mean Recommendation Score", range=[0.5, 5.5], dtick=1),
-            template="plotly_dark",
-            height=420,
-            margin=dict(l=60, r=30, t=40, b=60),
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5),
-        )
+        if max_tags <= 1:
+            dose_agg["Tag Label"] = dose_agg["Tag Count"].map({0: "No Badge", 1: "Badge Present"})
+            fig_dose = px.bar(
+                dose_agg,
+                x="Tag Label",
+                y="Mean Score",
+                color="Condition",
+                barmode="group",
+                error_y="SEM",
+                color_discrete_map=colors,
+                text=dose_agg["Mean Score"].round(2),
+                category_orders={"Tag Label": ["No Badge", "Badge Present"]},
+            )
+            fig_dose.update_layout(
+                yaxis=dict(title="Mean Recommendation Score", range=[0, 5.5], dtick=1),
+                xaxis_title="",
+                template="plotly_dark",
+                height=420,
+                margin=dict(l=60, r=30, t=40, b=60),
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5),
+            )
+            fig_dose.update_traces(textposition="outside")
+        else:
+            fig_dose = go.Figure()
+            for cond in dose_agg["Condition"].unique():
+                subset = dose_agg[dose_agg["Condition"] == cond].sort_values("Tag Count")
+                fig_dose.add_trace(go.Scatter(
+                    x=subset["Tag Count"],
+                    y=subset["Mean Score"],
+                    mode="lines+markers",
+                    name=cond,
+                    line=dict(width=3, color=colors.get(cond, "#888")),
+                    marker=dict(size=10),
+                    error_y=dict(type="data", array=subset["SEM"].tolist(), visible=True),
+                    hovertemplate="Tags: %{x}<br>Mean: %{y:.2f} ± %{error_y.array:.2f}<br>N=%{customdata}",
+                    customdata=subset["N"].tolist(),
+                ))
+            fig_dose.update_layout(
+                xaxis=dict(title="Number of Social Proof Tags", dtick=1, range=[-0.3, max_tags + 0.3]),
+                yaxis=dict(title="Mean Recommendation Score", range=[0.5, 5.5], dtick=1),
+                template="plotly_dark",
+                height=420,
+                margin=dict(l=60, r=30, t=40, b=60),
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5),
+            )
         st.plotly_chart(fig_dose, use_container_width=True)
 
     # ── 2. Model Tier Comparison ─────────────────────────────────
@@ -615,7 +834,7 @@ with tab_research:
             color="Condition",
             barmode="group",
             error_y="SEM",
-            color_discrete_map={"🟢 Average Consumer": "#22c55e", "🔴 Consumer Advocate": "#ef4444"},
+            color_discrete_map={"🟢 Average Consumer": "#22c55e", "🔴 Consumer Advocate": "#ef4444", "🟢 Baseline": "#22c55e", "🔴 Manipulation": "#ef4444"},
             text=tier_agg["Mean Score"].round(2),
         )
         fig_tier.update_layout(
@@ -647,7 +866,7 @@ with tab_research:
             y="Raw Score",
             color="Condition Label",
             points="all",
-            color_discrete_map={"🟢 Average Consumer": "#22c55e", "🔴 Consumer Advocate": "#ef4444"},
+            color_discrete_map={"🟢 Average Consumer": "#22c55e", "🔴 Consumer Advocate": "#ef4444", "🟢 Baseline": "#22c55e", "🔴 Manipulation": "#ef4444"},
         )
         fig_box.update_layout(
             yaxis=dict(title="Recommendation Score", dtick=1, range=[0.5, 5.5]),
